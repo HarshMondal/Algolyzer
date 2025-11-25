@@ -41,21 +41,17 @@ function MainVisualizer({
         />
       </div>
       
-      <div className="flex-1 min-h-[500px] bg-gray-900 rounded-lg border-2 border-gray-700 shadow-inner overflow-hidden flex flex-col">
-        {array.length > 0 ? (
-          <div className="flex-1 flex">
-            <ArrayVisualizer
-              array={array}
-              highlightedIndices={highlightedIndices}
-              currentFrame={currentFrame}
-            />
-          </div>
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-xl text-gray-400">Generate an array to start visualizing</p>
-          </div>
-        )}
-      </div>
+      {array.length > 0 ? (
+        <ArrayVisualizer
+          array={array}
+          highlightedIndices={highlightedIndices}
+          currentFrame={currentFrame}
+        />
+      ) : (
+        <div className="flex-1 min-h-[500px] flex items-center justify-center">
+          <p className="text-xl text-gray-400">Generate an array to start visualizing</p>
+        </div>
+      )}
 
       <div className="space-y-2">
         <StatisticsPanel

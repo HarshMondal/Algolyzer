@@ -31,7 +31,7 @@ export default function ArrayVisualizer({
   }, [isFullySorted, array.length]);
 
   return (
-    <div className="w-full h-full flex items-end justify-center gap-0.5 sm:gap-1 px-2 pb-3">
+    <div className="flex-1 min-h-[500px] w-full flex items-end justify-center gap-1 sm:gap-2 px-4" style={{ paddingBottom: '64px' }}>
       {array.map((value, index) => {
         const isHighlighted = highlightedIndices.includes(index);
         const isCompared =

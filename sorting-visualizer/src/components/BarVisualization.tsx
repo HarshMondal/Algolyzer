@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import { BAR_COLORS } from '../constants/colors';
 
 interface BarVisualizationProps {
@@ -18,9 +18,21 @@ export default function BarVisualization({
   isSwapped = false,
   isSorted = false,
 }: BarVisualizationProps) {
-  const heightPercentage = useMemo(() => {
-    return maxValue > 0 ? (value / maxValue) * 100 : 0;
-  }, [value, maxValue]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(400);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        const height = containerRef.current.offsetHeight;
+        setContainerHeight(height);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   const barColor = useMemo(() => {
     if (isSorted) return BAR_COLORS.SORTED;
@@ -31,13 +43,15 @@ export default function BarVisualization({
   }, [isSorted, isSwapped, isCompared, isHighlighted]);
 
   const barStyle = useMemo(() => {
-    // Calculate height with a minimum to ensure bars are visible
-    const calculatedHeight = Math.max(heightPercentage, 5); // At least 5% height
+    const labelSpace = 36; // h-8 (32px) + mt-1 (4px) = 36px
+    const availableHeight = containerHeight - labelSpace;
+    const heightPercentage = maxValue > 0 ? value / maxValue : 0;
+    const calculatedHeight = Math.max(availableHeight * heightPercentage, 10); // Min 10px
     
     const baseStyle: React.CSSProperties = {
-      height: `${calculatedHeight}%`,
+      height: `${calculatedHeight}px`, // Use pixel height for accurate sizing
       backgroundColor: barColor,
-      minHeight: '20px', // Increased minimum height
+      width: '100%',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       boxShadow: isSorted
         ? `0 0 8px ${barColor}, 0 0 16px ${barColor}60`
@@ -46,21 +60,27 @@ export default function BarVisualization({
         : '0 2px 6px rgba(0, 0, 0, 0.3)',
       transform: isCompared || isSwapped ? 'scale(1.08)' : isSorted ? 'scale(1.02)' : 'scale(1)',
       border: isSorted ? `2px solid ${barColor}` : '2px solid rgba(55, 65, 81, 0.5)',
+      borderRadius: '4px 4px 0 0',
     };
     return baseStyle;
-  }, [heightPercentage, barColor, isCompared, isSwapped, isSorted]);
+  }, [barColor, isCompared, isSwapped, isSorted, value, maxValue, containerHeight]);
 
   return (
-    <div className="flex flex-col items-center justify-end flex-1 min-w-[10px] sm:min-w-[12px] px-0.5 sm:px-1 h-full pb-6">
+    <div 
+      ref={containerRef}
+      className="flex flex-col items-center justify-end flex-1 min-w-[20px] sm:min-w-[24px] max-w-[60px] h-full"
+    >
       <div
-        className="w-full rounded-t-lg"
+        className="w-full"
         style={barStyle}
         aria-label={`Bar with value ${value}`}
         role="img"
       />
-      <span className="text-xs font-bold text-gray-200 mt-1 hidden sm:block select-none drop-shadow-lg">
-        {value}
-      </span>
+      <div className="w-full h-8 flex items-center justify-center mt-1 flex-shrink-0">
+        <span className="text-sm font-bold text-gray-200 select-none drop-shadow-lg">
+          {value}
+        </span>
+      </div>
     </div>
   );
 }
