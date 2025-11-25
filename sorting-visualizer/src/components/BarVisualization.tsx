@@ -8,6 +8,7 @@ interface BarVisualizationProps {
   isCompared?: boolean;
   isSwapped?: boolean;
   isSorted?: boolean;
+  barWidth?: number;
 }
 
 export default function BarVisualization({
@@ -17,6 +18,7 @@ export default function BarVisualization({
   isCompared = false,
   isSwapped = false,
   isSorted = false,
+  barWidth,
 }: BarVisualizationProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(400);
@@ -65,10 +67,28 @@ export default function BarVisualization({
     return baseStyle;
   }, [barColor, isCompared, isSwapped, isSorted, value, maxValue, containerHeight]);
 
+  const containerStyle = useMemo(() => {
+    // Use dynamic width when provided, otherwise fall back to fixed classes
+    if (barWidth !== undefined) {
+      return {
+        width: `${barWidth}px`,
+        minWidth: `${barWidth}px`,
+        maxWidth: `${barWidth}px`,
+        flexShrink: 0,
+      } as React.CSSProperties;
+    }
+    return {};
+  }, [barWidth]);
+
+  const containerClassName = barWidth === undefined 
+    ? "flex flex-col items-center justify-end flex-1 min-w-[20px] sm:min-w-[24px] max-w-[60px] h-full"
+    : "flex flex-col items-center justify-end flex-1 h-full";
+
   return (
     <div 
       ref={containerRef}
-      className="flex flex-col items-center justify-end flex-1 min-w-[20px] sm:min-w-[24px] max-w-[60px] h-full"
+      className={containerClassName}
+      style={containerStyle}
     >
       <div
         className="w-full"
