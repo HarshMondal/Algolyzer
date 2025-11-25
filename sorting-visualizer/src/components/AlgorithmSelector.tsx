@@ -19,7 +19,7 @@ export default function AlgorithmSelector({
 
   return (
     <div className="flex items-center gap-3">
-      <label htmlFor="algorithm-selector" className="text-sm font-semibold text-gray-300 whitespace-nowrap">
+      <label htmlFor="algorithm-selector" className="text-sm sm:text-base font-semibold text-gray-300 whitespace-nowrap">
         Algorithm:
       </label>
       <select
@@ -27,7 +27,7 @@ export default function AlgorithmSelector({
         value={selectedAlgorithm}
         onChange={handleChange}
         disabled={disabled}
-        className="px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 disabled:from-gray-800 disabled:to-gray-800 disabled:cursor-not-allowed rounded-lg font-semibold text-white border border-gray-500 focus:border-blue-400 focus:outline-none transition-all cursor-pointer disabled:opacity-50"
+        className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 disabled:from-gray-800 disabled:to-gray-800 disabled:cursor-not-allowed rounded-lg font-semibold text-white text-sm sm:text-base border-2 border-gray-500 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all cursor-pointer disabled:opacity-50 min-w-[140px] sm:min-w-[180px]"
         aria-label="Select sorting algorithm"
       >
         {ALGORITHMS.map((algorithm) => (

@@ -1,7 +1,11 @@
 import ArrayVisualizer from './ArrayVisualizer';
 import ArrayControls from './ArrayControls';
 import StatisticsPanel from './StatisticsPanel';
+import AlgorithmSelector from './AlgorithmSelector';
+import ControlButtons from './ControlButtons';
+import SpeedControl from './SpeedControl';
 import type { SortingFrame } from '../types/sorting';
+import type { AlgorithmName } from '../utils/sortingAlgorithms';
 
 interface MainVisualizerProps {
   array: number[];
@@ -14,7 +18,16 @@ interface MainVisualizerProps {
   maxSize: number;
   totalFrames: number;
   currentFrameIndex: number;
-  selectedAlgorithm: string;
+  selectedAlgorithm: AlgorithmName;
+  onAlgorithmChange: (algorithm: AlgorithmName) => void;
+  onPlay: () => void;
+  onPause: () => void;
+  onReset: () => void;
+  onStepForward: () => void;
+  isPlaying: boolean;
+  isPaused: boolean;
+  speedMultiplier: number;
+  onSpeedChange: (speed: number) => void;
 }
 
 function MainVisualizer({
@@ -29,18 +42,58 @@ function MainVisualizer({
   totalFrames,
   currentFrameIndex,
   selectedAlgorithm,
+  onAlgorithmChange,
+  onPlay,
+  onPause,
+  onReset,
+  onStepForward,
+  isPlaying,
+  isPaused,
+  speedMultiplier,
+  onSpeedChange,
 }: MainVisualizerProps) {
   return (
     <div className="w-full h-full max-w-7xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border-2 border-gray-700 shadow-2xl flex flex-col p-4 sm:p-6 gap-4">
-      <div className="space-y-3">
-        <h2 className="text-xl sm:text-2xl font-bold text-white text-center">{selectedAlgorithm} Sort Visualizer</h2>
-        <ArrayControls
-          arraySize={arraySize}
-          onSizeChange={onSizeChange}
-          onGenerate={onGenerate}
-          minSize={minSize}
-          maxSize={maxSize}
-        />
+      <div className="space-y-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-white text-center">{selectedAlgorithm} Sort</h2>
+        
+        {/* Primary Controls - Algorithm and Playback */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-center gap-3 lg:gap-4 p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700">
+          <div className="flex-shrink-0">
+            <AlgorithmSelector
+              selectedAlgorithm={selectedAlgorithm}
+              onAlgorithmChange={onAlgorithmChange}
+              disabled={isPlaying}
+            />
+          </div>
+          <div className="flex-1 flex justify-center">
+            <ControlButtons
+              onPlay={onPlay}
+              onPause={onPause}
+              onReset={onReset}
+              onStepForward={onStepForward}
+              isPlaying={isPlaying}
+              isPaused={isPaused}
+              hasFrames={array.length > 0 && totalFrames > 0}
+              canStepForward={currentFrameIndex < totalFrames - 1}
+            />
+          </div>
+        </div>
+
+        {/* Secondary Controls - Array Size and Speed */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700">
+          <ArrayControls
+            arraySize={arraySize}
+            onSizeChange={onSizeChange}
+            onGenerate={onGenerate}
+            minSize={minSize}
+            maxSize={maxSize}
+          />
+          <SpeedControl
+            speed={speedMultiplier}
+            onSpeedChange={onSpeedChange}
+          />
+        </div>
       </div>
       
       {array.length > 0 ? (

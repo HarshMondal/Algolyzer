@@ -1,9 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import MainVisualizer from '../components/MainVisualizer';
-import ControlButtons from '../components/ControlButtons';
-import AlgorithmSelector from '../components/AlgorithmSelector';
-import SpeedControl from '../components/SpeedControl';
 import { useArrayGenerator } from '../hooks/useArrayGenerator';
 import { useSortingVisualizer } from '../hooks/useSortingVisualizer';
 import { useAnimation } from '../hooks/useAnimation';
@@ -111,34 +108,17 @@ function VisualizerPage() {
           totalFrames={frames.length}
           currentFrameIndex={currentFrameIndex}
           selectedAlgorithm={selectedAlgorithm}
+          onAlgorithmChange={handleAlgorithmChange}
+          onPlay={play}
+          onPause={pause}
+          onReset={handleReset}
+          onStepForward={handleStepForward}
+          isPlaying={isPlaying}
+          isPaused={isPaused}
+          speedMultiplier={speedMultiplier}
+          onSpeedChange={handleSpeedChange}
         />
       </main>
-
-      <footer className="bg-gradient-to-r from-gray-800 via-gray-800 to-gray-900 px-6 py-5 shadow-xl border-t border-gray-700">
-        <div className="flex flex-col gap-4 max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <AlgorithmSelector
-              selectedAlgorithm={selectedAlgorithm}
-              onAlgorithmChange={handleAlgorithmChange}
-              disabled={isPlaying}
-            />
-            <SpeedControl
-              speed={speedMultiplier}
-              onSpeedChange={handleSpeedChange}
-            />
-          </div>
-          <ControlButtons
-            onPlay={play}
-            onPause={pause}
-            onReset={handleReset}
-            onStepForward={handleStepForward}
-            isPlaying={isPlaying}
-            isPaused={isPaused}
-            hasFrames={frames.length > 0}
-            canStepForward={currentFrameIndex < frames.length - 1}
-          />
-        </div>
-      </footer>
     </div>
   );
 }

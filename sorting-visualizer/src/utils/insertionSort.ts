@@ -1,4 +1,4 @@
-import type { SortingFrame } from '../types/sorting';
+import { type SortingFrame } from '../types/sorting';
 
 export function insertionSortWithSteps(array: number[]): SortingFrame[] {
   const frames: SortingFrame[] = [];
@@ -14,7 +14,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
     description: 'Starting Insertion Sort',
     comparisonCount: 0,
     swapCount: 0,
-  });
+  } as SortingFrame);
 
   const n = arr.length;
 
@@ -30,7 +30,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
       description: `Inserting ${key} into sorted portion`,
       comparisonCount,
       swapCount,
-    });
+    } as SortingFrame);
 
     // Move elements greater than key one position ahead
     while (j >= 0 && arr[j] > key) {
@@ -43,7 +43,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
         description: `Comparing ${arr[j]} with ${key}`,
         comparisonCount,
         swapCount,
-      });
+      } as SortingFrame);
 
       // Shift element to the right
       arr[j + 1] = arr[j];
@@ -57,7 +57,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
         description: `Shifting ${arr[j + 1]} to the right`,
         comparisonCount,
         swapCount,
-      });
+      } as SortingFrame);
 
       j--;
     }
@@ -75,7 +75,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
         description: `Inserted ${key} at position ${j + 1}`,
         comparisonCount,
         swapCount,
-      });
+      } as SortingFrame);
     }
   }
 
@@ -87,7 +87,7 @@ export function insertionSortWithSteps(array: number[]): SortingFrame[] {
     description: 'Sorting complete!',
     comparisonCount,
     swapCount,
-  });
+  } as SortingFrame);
 
   return frames;
 }
