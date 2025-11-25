@@ -1,12 +1,13 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { SortingFrame } from '../types/sorting';
-import { bubbleSortWithSteps } from '../utils/bubbleSort';
+import { getSortingAlgorithm, type AlgorithmName } from '../utils/sortingAlgorithms';
 
 export function useSortingVisualizer() {
   const [originalArray, setOriginalArray] = useState<number[]>([]);
   const [currentArray, setCurrentArray] = useState<number[]>([]);
   const [frames, setFrames] = useState<SortingFrame[]>([]);
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmName>('Bubble');
 
   const highlightedIndices = useMemo(() => {
     if (frames.length === 0 || currentFrameIndex >= frames.length) {
@@ -17,11 +18,16 @@ export function useSortingVisualizer() {
   }, [frames, currentFrameIndex]);
 
   const generateFrames = useCallback((array: number[]) => {
-    const newFrames = bubbleSortWithSteps(array);
+    const algorithmFunction = getSortingAlgorithm(selectedAlgorithm);
+    const newFrames = algorithmFunction(array);
     setOriginalArray([...array]);
     setCurrentArray([...array]);
     setFrames(newFrames);
     setCurrentFrameIndex(0);
+  }, [selectedAlgorithm]);
+
+  const setAlgorithm = useCallback((algorithm: AlgorithmName) => {
+    setSelectedAlgorithm(algorithm);
   }, []);
 
   const resetToOriginal = useCallback(() => {
@@ -88,10 +94,12 @@ export function useSortingVisualizer() {
     currentFrameIndex,
     highlightedIndices,
     currentFrame,
+    selectedAlgorithm,
     generateFrames,
     resetToOriginal,
     setCurrentFrame,
     setCurrentArray,
+    setAlgorithm,
   };
 }
 

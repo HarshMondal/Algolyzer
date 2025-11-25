@@ -14,6 +14,7 @@ interface MainVisualizerProps {
   maxSize: number;
   totalFrames: number;
   currentFrameIndex: number;
+  selectedAlgorithm: string;
 }
 
 function MainVisualizer({
@@ -27,11 +28,12 @@ function MainVisualizer({
   maxSize,
   totalFrames,
   currentFrameIndex,
+  selectedAlgorithm,
 }: MainVisualizerProps) {
   return (
     <div className="w-full h-full max-w-7xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border-2 border-gray-700 shadow-2xl flex flex-col p-4 sm:p-6 gap-4">
       <div className="space-y-3">
-        <h2 className="text-xl sm:text-2xl font-bold text-white text-center">Bubble Sort Visualizer</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white text-center">{selectedAlgorithm} Sort Visualizer</h2>
         <ArrayControls
           arraySize={arraySize}
           onSizeChange={onSizeChange}

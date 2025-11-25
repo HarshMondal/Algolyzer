@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const DEFAULT_SPEED = 100; // milliseconds per frame
+const BASE_DELAY = 100; // milliseconds per frame at 1x speed
+const DEFAULT_SPEED_MULTIPLIER = 1; // 1x speed
 
 export function useAnimation(
   onTick: () => void,
@@ -9,7 +10,7 @@ export function useAnimation(
 ) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [animationSpeed, setAnimationSpeed] = useState(DEFAULT_SPEED);
+  const [speedMultiplier, setSpeedMultiplier] = useState(DEFAULT_SPEED_MULTIPLIER);
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const onTickRef = useRef(onTick);
 
@@ -37,12 +38,23 @@ export function useAnimation(
     setIsPaused(false);
   }, []);
 
+  const stepForward = useCallback(() => {
+    if (isPlaying) {
+      setIsPlaying(false);
+      setIsPaused(true);
+    }
+    onTickRef.current();
+  }, [isPlaying]);
+
+  // Calculate actual delay based on speed multiplier
+  const actualDelay = BASE_DELAY / speedMultiplier;
+
   // Animation loop
   useEffect(() => {
     if (isPlaying && !isPaused) {
       intervalIdRef.current = setInterval(() => {
         onTickRef.current();
-      }, animationSpeed);
+      }, actualDelay);
     } else {
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
@@ -55,7 +67,7 @@ export function useAnimation(
         clearInterval(intervalIdRef.current);
       }
     };
-  }, [isPlaying, isPaused, animationSpeed]);
+  }, [isPlaying, isPaused, actualDelay]);
 
   // Auto-pause when reaching the end
   useEffect(() => {
@@ -67,11 +79,12 @@ export function useAnimation(
   return {
     isPlaying,
     isPaused,
-    animationSpeed,
+    speedMultiplier,
     play,
     pause,
     reset,
-    setSpeed: setAnimationSpeed,
+    stepForward,
+    setSpeed: setSpeedMultiplier,
   };
 }
 
